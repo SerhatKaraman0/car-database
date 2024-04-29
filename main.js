@@ -170,8 +170,46 @@ async function processModel(modelURL, currentModel, modelsJSON) {
         .trim();
       modelsJSON[currentModel].modelSpecificProblems[modelName].modelWorstYear =
         modelWorstYear;
+
+      const barChartData = $("ul.timeline li");
+
+      // Initialize an empty array to store the scraped data
+      const scrapedData = [];
+
+      // Loop through each <li> element and extract the relevant information
+      barChartData.each((index, element) => {
+        // Extract the label (year)
+        const label = $(element).find(".label").text();
+
+        // Extract the height of the bar (percentage)
+        const height = parseFloat(
+          $(element)
+            .find(".bar")
+            .attr("style")
+            .match(/height: ([0-9.]+)%/)[1]
+        );
+
+        // Extract the count
+        const count = parseInt($(element).find(".count").text());
+
+        // Store the extracted data in an object
+        const dataPoint = {
+          year: label,
+          percentage: height,
+          count: count,
+        };
+
+        // Push the object to the array
+        scrapedData.push(dataPoint);
+      });
+
+      // Output the scraped data
+      modelsJSON[currentModel].modelSpecificProblems[
+        modelName
+      ].modelProblemsYearBarChart = scrapedData;
     }
   } catch (error) {
     console.error(error);
   }
 }
+
